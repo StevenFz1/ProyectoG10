@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://wwww.thymeleaf.org" 
+      xmlns:sec="http://thymeleaft.org/extras/spring-security">
+    <head th:replace="layout/plantilla :: head">
+        <title>Tienda el Ángel</title>
+        
+    </head>
+    <body>
+        <header th:replace="layout/plantilla :: header"/>
+        <div class="contenido">
+        <h2 th:text="#{articulo.datos}">[[#{articulo.datos}]]</h2>
+        <a th:href="@{/articulo/listado}" th:text="#{accion.regresar}">[[#{accion.regresar}]]</a>
+        <br/>
+        <form th:action="@{/articulo/guardar}"
+              method="post"
+              th:object="${articulo}">
+            <input type="hidden" name="idArticulo" th:field="*{idArticulo}"/>
+            
+            <label for="categoria" th:text="#{articulo.categoria}">[[#{articulo.categoria}]]</label>
+            <select th:field="*{idCategoria}">
+                <option th:each="categoria: ${categorias}"
+                        th:value="${categoria.idCategoria}"
+                        th:text="${categoria.descripcion}"/>
+            </select>
+            <br/>
+            <label for="descripcion" th:text="#{articulo.descripcion}">[[#{articulo.descripcion}]]</label>
+            <input required="true" type="text" name="descripcion" th:field="*{descripcion}"/>
+            <br/>
+            <label for="detalle" th:text="#{articulo.detalle}">[[#{articulo.detalle}]]</label>
+            <textarea required="true" name="detalle" th:field="*{detalle}" rows="6" cols="50"/>
+            <br/>
+            <label for="precio" th:text="#{articulo.precio}">[[#{articulo.precio}]]</label>
+            <input required="true" type="number" name="precio" th:field="*{precio}"/>
+            <br/>
+            <label for="existencias" th:text="#{articulo.existencias}">[[#{articulo.existencias}]]</label>
+            <input required="true" type="number" name="existencias" th:field="*{existencias}"/>
+            <br/>
+            <label for="activa" th:text="#{articulo.activo}">[[#{articulo.activo}]]</label>
+            <input type="checkbox" name="activo" th:field="*{activo}"/>
+            <br/><br/>
+            <button type="submit" name="guardar" th:text="#{accion.guardar}" sec:authorize="hasRole('ROLE_ADMIN')"/>
+        </form>
+        </div>
+      <footer th:replace="layout/plantilla :: footer"/>
+    </body>
+</html>

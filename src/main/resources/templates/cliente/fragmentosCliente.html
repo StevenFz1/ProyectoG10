@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://wwww.thymeleaf.org" 
+      xmlns:sec="http://thymeleaft.org/extras/spring-security">
+    <head th:replace="layout/plantilla :: head">
+        <title>Tienda el Ángel</title>
+        
+    </head>
+    <body>
+        
+        <section th:fragment="botonesAgregar" class="py-4 mb-4 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3" sec:authorize="hasRole('ROLE_ADMIN')">   
+                        <button 
+                            type="button" 
+                            class="btn btn-primary btn-block" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#agregarCliente">
+                            <i class="fas fa-plus"></i> [[#{accion.agregar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section th:fragment="listadoClientes" id="clientes">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header bg-warning text-light">
+                                <h4>[[#{cliente.titulo}]]</h4>
+                            </div>
+                            <div th:if="${clientes != null and !clientes.empty}">
+                                <table class="table table-stryped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>#</th>
+                                            <th th:text="#{cliente.nombre}">[[#{cliente.nombre}]]</th>
+                                            <th th:text="#{cliente.limite}">[[#{cliente.limite}]]</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="cliente, contador : ${clientes}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${cliente.nombre} + ' ' + ${cliente.apellidos}]]</td>
+                                            <td>[[${new java.text.DecimalFormat('¢#,##0.00').format(cliente.credito.limite)}]]</td>
+                                            <td>
+                                                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cliente/eliminar/}+${cliente.idCliente}"
+                                                   class="btn btn-danger">
+                                                    <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cliente/modificar/}+${cliente.idCliente}"
+                                                   class="btn btn-primary">
+                                                    <i class="fas fa-pencil-square"></i> [[#{accion.actualizar}]]
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${clientes == null or clientes.empty}">
+                                <span th:text="#{cliente.no_mostrar}">[[#{cliente.no_mostrar}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                       
+                    <div class="col-md-3">
+                        <div class="card text-center bg-warning text-light mb-3">
+                            <div class="card-body">
+                                <h3>[[#{cliente.limiteTotal}]]</h3>
+                                <h4 class="fs-4">
+                                [[${new java.text.DecimalFormat('¢#,##0.00').format(limiteTotal)}]]    
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="card text-center bg-info text-light mb-3">
+                            <div class="card-body">
+                                <h3>[[#{cliente.totalClientes}]]</h3>
+                                <h4 class="fs-4">
+                                    <i class="fas fa-users"></i> [[${totalClientes}]]</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        
+        <section th:fragment="agregarCliente">
+            <div id="agregarCliente"
+                 class="modal fade"
+                 tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{accion.agregar}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                        </div>
+                        <form th:action="@{/cliente/guardar}"
+                              method="post"
+                              class="was-validated"
+                              th:object="${cliente}">
+                            
+                            <div class="modal-body">
+                                <div class="form-group">
+                            <label for="nombre" th:text="#{cliente.nombre}">[[#{cliente.nombre}]]</label>
+                            <input required="true" type="text" name="nombre" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                            <label for="apellidos" th:text="#{cliente.apellidos}">[[#{cliente.apellidos}]]</label>
+                            <input required="true" type="text" name="apellidos" class="form-control"/>
+                            </div>
+                            <div class="form-group">   
+                            <label for="correo" th:text="#{cliente.correo}">[[#{cliente.correo}]]</label>
+                            <input required="true" type="email" name="correo" class="form-control"/>
+                            </div>
+                            <div class="form-group">    
+                            <label for="telefono" th:text="#{cliente.telefono}">[[#{cliente.telefono}]]</label>
+                            <input required="true" type="tel" name="telefono" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                            <label for="limite" th:text="#{cliente.limite}">[[#{cliente.limite}]]</label>
+                            <input required="true" type="number" name="limite" class="form-control"/>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit" name="guardar" th:text="#{accion.guardar}"/>
+                            </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>  
+            </div>
+            
+        </section>
+
+    </body>
+</html>

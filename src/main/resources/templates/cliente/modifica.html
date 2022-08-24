@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://wwww.thymeleaf.org" 
+      xmlns:sec="http://thymeleaft.org/extras/spring-security">
+    <head th:replace="layout/plantilla :: head">
+        <title>Tienda el Ángel</title>
+        
+    </head>
+    <body>
+        <header th:replace="layout/plantilla :: header"/>
+        <div class="contenido">
+        <h2 th:text="#{cliente.datos}">[[#{cliente.datos}]]</h2>
+        <a th:href="@{/cliente/listado}" th:text="#{accion.regresar}">[[#{accion.regresar}]]</a>
+        <br/>
+        <form th:action="@{/cliente/guardar}"
+              method="post"
+              th:object="${cliente}">
+            <input type="hidden" name="idCliente" th:field="*{idCliente}"/>
+            <input type="hidden" name="idCredito" th:field="*{credito.idCredito}"/>
+            
+            <label for="nombre" th:text="#{cliente.nombre}">[[#{cliente.nombre}]]</label>
+            <input required="true" type="text" name="nombre" th:field="*{nombre}"/>
+            <br/>
+            <label for="apellidos" th:text="#{cliente.apellidos}">[[#{cliente.apellidos}]]</label>
+            <input required="true" type="text" name="apellidos" th:field="*{apellidos}"/>
+            <br/>
+            <label for="correo" th:text="#{cliente.correo}">[[#{cliente.correo}]]</label>
+            <input required="true" type="email" name="correo" th:field="*{correo}"/>
+            <br/>
+            <label for="telefono" th:text="#{cliente.telefono}">[[#{cliente.telefono}]]</label>
+            <input required="true" type="tel" name="telefono" th:field="*{telefono}"/>
+            <br/>
+            <label for="limite" th:text="#{cliente.limite}">[[#{cliente.limite}]]</label>
+            <input required="true" type="number" name="limite" th:field="*{credito.limite}"/>
+            <br/><br/>
+            <button type="submit" name="guardar" th:text="#{accion.guardar}" sec:authorize="hasRole('ROLE_ADMIN')"/>
+        </form>
+        </div>
+      <footer th:replace="layout/plantilla :: footer"/>
+    </body>
+</html>

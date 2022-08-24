@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://wwww.thymeleaf.org" 
+      xmlns:sec="http://thymeleaft.org/extras/spring-security">
+    <head th:replace="layout/plantilla :: head">
+        <title>Tienda el Ángel</title>
+        
+    </head>
+    <body>
+
+        <section th:fragment="botonesAgregar" class="py-4 mb-4 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <button type="button"
+                                class="btn btn-primary btn-block"
+                                data-bs-toggle="modal"
+                                data-bs-target="#agregarCategoria">
+                            <i class="fas fa-plus"></i> [[#{accion.agregar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section th:fragment="listadoCategoria" id="categoria">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9"> 
+                        <div class="card">
+                            <div class="card-header bg-warning text-light">
+                                <h4 th:text="#{categoria.titulo}">[[#{categoria.titulo}]]</h4>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${categorias != null and !categorias.empty}">
+                                    <table class="table table-stryped">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th th:text="#{categoria.descripcion}">[[#{categoria.descripcion}]]</th>
+                                                <th th:text="#{categoria.activo}">[[#{categoria.activo}]]</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="categoria : ${categorias}">
+                                                <td th:text="${categoria.descripcion}"></td>
+                                                <td><input type="checkbox" name="activo" th:checked="${categoria.activo}" disabled="true"></td>
+                                                <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/categoria/eliminar/} + ${categoria.idCategoria}" class="btn btn-danger"><i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a></td>
+                                                <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/categoria/modificar/} + ${categoria.idCategoria}" class="btn btn-primary"><i class="fas fa-pencil-square"></i> [[#{accion.actualizar}]]</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center p-2" th:if="${categorias == null or categorias.empty}" th:text="#{categoria.no_mostrar}">
+                                    [[#{categoria.no_mostrar}]]
+                                </div>    
+
+                            </div>
+                        </div>
+                    </div>   
+                </div>
+            </div>       
+        </section>
+        
+        <section th:fragment="agregarCategoria">
+            <div id="agregarCategoria" class="modal fade" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                           <h5 class="modal-title">[[#{accion.agregar}]]</h5> 
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                        </div>
+                        <form th:action="@{/categoria/guardar}"
+                              method="post"
+                              class="was-validated"
+                              th:object="${categoria}">
+                            <div class="modal-body">
+                                <div class="form-group">  
+                                    <label for="descripcion" th:text="#{categoria.descripcion}">[[#{categoria.descripcion}]]</label>
+                                    <input required="true" type="text" name="descripcion" class="form-control"/>
+                                </div>
+                                <div class="form-group"> 
+                                    <label for="activa" th:text="#{categoria.activo}">[[#{categoria.activo}]]</label>
+                                    <input required="true" type="checkbox" name="activo" class="form-control"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="submit" name="guardar" th:text="#{accion.guardar}"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </body>
+</html>
